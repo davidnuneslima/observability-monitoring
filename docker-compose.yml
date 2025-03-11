@@ -22,6 +22,9 @@ services:
       - observability
     environment:
       - GF_SECURITY_ADMIN_PASSWORD=admin
+    volumes:
+      - ./grafana/grafana.ini:/etc/grafana/grafana.ini
+      - ./grafana/provisioning/:/etc/grafana/provisioning/
 
   loki:
     image: grafana/loki:latest

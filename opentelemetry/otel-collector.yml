@@ -1,0 +1,47 @@
+receivers:
+  otlp:
+    protocols:
+      grpc:
+        endpoint: ":4317"
+      http:
+        endpoint: ":55681"
+
+exporters:
+  logging:
+    loglevel: info
+  otlp/tempo:
+    endpoint: "http://localhost:55680"
+    insecure: true
+  prometheus:
+    endpoint: "localhost:9090"
+    namespace: "otel"
+
+processors:
+  batch:
+    timeout: 5s
+    send_batch_size: 1024
+  memory_limiter:
+    limit_mib: 4096
+    spike_limit_mib: 1024
+  attributes:
+    actions:
+      - key: "service.name"
+        action: "insert"
+        value: "otel-collector-service"
+
+service:
+  pipelines:
+    traces:
+      receivers: [otlp]
+      processors: [batch, memory_limiter, attributes]
+      exporters: [otlp/tempo, logging]
+
+    metrics:
+      receivers: [otlp]
+      processors: [batch]
+      exporters: [prometheus]
+
+    logs:
+      receivers: [otlp]
+      processors: [batch]
+      exporters: [logging]

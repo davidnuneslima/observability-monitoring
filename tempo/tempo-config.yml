@@ -1,0 +1,41 @@
+auth_enabled: false
+
+server:
+  http_listen_port: 55680
+  grpc_listen_port: 55680
+
+retention:
+  retention_period: 7d
+
+distributor:
+  receivers:
+    zipkin:
+      http:
+        endpoint: ":9411"
+    jaeger:
+      grpc:
+        endpoint: ":14250"
+
+ingester:
+  wal:
+    dir: "/tmp/tempo/wal"
+  chunk_store:
+    dir: "/tmp/tempo/chunks"
+  max_block_duration: 5m
+  max_retention_period: 7d
+
+frontend:
+  query_shards: 4
+
+storage:
+  backend: "local"
+  index_cache_size: 1GB
+  chunk_cache_size: 2GB
+
+compactor:
+  compaction_window: 5m
+  index_compaction_window: 1h
+
+limits:
+  max_concurrent_requests: 10
+  max_request_size: 100MB
