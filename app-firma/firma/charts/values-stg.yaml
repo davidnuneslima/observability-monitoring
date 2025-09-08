@@ -1,0 +1,18 @@
+replicaCount: 2
+
+resources:
+  requests:
+    cpu: "200m"
+    memory: "256Mi"
+  limits:
+    cpu: "500m"
+    memory: "512Mi"
+
+env:
+  APP_ENV: "staging"
+  LOG_LEVEL: "debug"
+  OTEL_EXPORTER_OTLP_ENDPOINT: "http://otel-collector.monitoring:4317"
+
+service:
+  type: ClusterIP
+  port: 80
