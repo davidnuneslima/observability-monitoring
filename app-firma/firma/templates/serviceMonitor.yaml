@@ -1,0 +1,15 @@
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: {{ include "firma.fullname" . }}
+  labels:
+    release: prometheus
+spec:
+  selector:
+    matchLabels:
+      app: {{ include "firma.name" . }}
+  endpoints:
+    - port: http
+      interval: 15s
+    - port: 9464
+      interval: 15s

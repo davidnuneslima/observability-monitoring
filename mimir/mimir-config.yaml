@@ -1,0 +1,28 @@
+server:
+  http_listen_port: 9009
+  grpc_listen_port: 9095
+
+distributor:
+  ring:
+    kvstore:
+      store: inmemory
+
+ingester:
+  lifecycler:
+    ring:
+      kvstore:
+        store: inmemory
+    final_sleep: 0s
+  chunk_idle_period: 5m
+  chunk_retain_period: 30s
+  max_chunk_age: 1h
+
+storage:
+  engine: chunks
+  backend: local
+  local:
+    directory: /mimir/chunks
+
+limits_config:
+  ingestion_rate_mb: 10
+  max_series_per_user: 1000000

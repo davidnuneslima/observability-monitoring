@@ -1,0 +1,39 @@
+replicaCount: 1
+
+image:
+  repository: app-firma/firma
+  tag: "latest"
+  pullPolicy: IfNotPresent
+
+service:
+  type: ClusterIP
+  port: 8080
+
+resources: {}
+
+otel:
+  enabled: true
+  collector:
+    image: otel/opentelemetry-collector:latest
+    config:
+      receivers:
+        otlp:
+          protocols:
+            grpc:
+            http:
+      exporters:
+        prometheus:
+          endpoint: "0.0.0.0:9464"
+        logging:
+          loglevel: debug
+      service:
+        pipelines:
+          metrics:
+            receivers: [otlp]
+            exporters: [prometheus]
+          logs:
+            receivers: [otlp]
+            exporters: [logging]
+          traces:
+            receivers: [otlp]
+            exporters: [logging]

@@ -23,7 +23,6 @@ services:
     environment:
       - GF_SECURITY_ADMIN_PASSWORD=admin
     volumes:
-      - ./grafana/grafana.ini:/etc/grafana/grafana.ini
       - ./grafana/provisioning/:/etc/grafana/provisioning/
 
   loki:
@@ -91,6 +90,22 @@ services:
       - /sys:/sys:ro
       - /var/lib/docker/:/var/lib/docker:ro
 
+  mimir:
+    image: grafana/mimir:latest
+    container_name: mimir
+    command: >
+      -config.file=/etc/mimir/config.yaml
+      -target=all
+    volumes:
+      - ./mimir-config.yaml:/etc/mimir/config.yaml
+    ports:
+      - "9009:9009"   # API
+      - "8008:8008"   # Metrics
+    networks:
+      - monitoring
+
 networks:
   observability:
+    driver: bridge
+  monitoring:
     driver: bridge
